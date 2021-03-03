@@ -1,5 +1,5 @@
 
-# Smooth lines for Standard Major Axis Rregressions
+# Smooth lines for Standard Major Axis Regression
 
 ![R-CMD-check](https://github.com/mattocci27/ggsma/workflows/R-CMD-check/badge.svg?branch=master)
 
