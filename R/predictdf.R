@@ -3,7 +3,6 @@
 
 utils::globalVariables(c(".", "boot_num", "strap"))
 
-#' @export
 predictdf.sma <- function(data, xseq, se, level) {
   data <- data$data
   coef <- sma_fun(data)

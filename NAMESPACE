@@ -2,7 +2,6 @@
 
 export("%>%")
 export(geom_sma)
-export(predictdf.sma)
 export(stat_sma)
 import(dplyr)
 import(ggplot2)

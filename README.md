@@ -17,11 +17,11 @@ leaf_low <- leaflife %>%
 
 ggplot(leaflife, aes(lma, longev)) +
   geom_point() +
-  geom_sma(method = "sma") +
+  geom_sma() +
   geom_smooth(method = "lm", col = "red") 
 ```
 
-    ## `stat_sma()` using formula 'y ~ x'
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
 
     ## `geom_smooth()` using formula 'y ~ x'
 

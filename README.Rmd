@@ -4,7 +4,7 @@ output:
     pandoc_args: --webtex=https://chart.apis.google.com/chart?cht=tx&chl=
 ---
 
-# Smooth lines for Standard Major Axis Rregressions 
+# Smooth lines for Standard Major Axis Regression 
 
 ![R-CMD-check](https://github.com/mattocci27/ggsma/workflows/R-CMD-check/badge.svg?branch=master)
 
@@ -26,6 +26,6 @@ leaf_low <- leaflife %>%
 
 ggplot(leaflife, aes(lma, longev)) +
   geom_point() +
-  geom_sma(method = "sma") +
+  geom_sma() +
   geom_smooth(method = "lm", col = "red") 
 ```
