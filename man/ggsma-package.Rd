@@ -11,7 +11,7 @@ estimates of the zero-truncated Poisson lognormal distributions and their
 mixtures.
 }
 \references{
-Bulmer, M. G. 1974. On Fitting the Poisson Lognormal Distribution to Species-Abundance Data. Biometrics 30:101-110.
+Warton, David I., Ian J. Wright, Daniel S. Falster, and Mark Westoby. 2006. Bivariate Line-Fitting Methods for Allometry. Biological Reviews 81: 259–91.
 }
 \author{
 Masatoshi Katabuchi <mattocci27@gmail.com>
