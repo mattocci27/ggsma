@@ -19,9 +19,22 @@ library(ggsma)
 library(smatr)
 
 data(leaflife)
+head(leaflife)
+```
+
+    ##   site rain soilp    longev       lma
+    ## 1    1 high  high 1.1145511 125.48736
+    ## 2    1 high  high 0.5161786  82.28108
+    ## 3    1 high  high 0.9718517  71.02316
+    ## 4    1 high  high 0.6722023  94.66730
+    ## 5    1 high  high 1.0947123 119.70161
+    ## 6    1 high  high 2.0606299 205.82589
+
+``` r
 leaf_low <- subset(leaflife, soilp == "low")
 
-ggplot(leaflife, aes(lma, longev)) +
+# lma vs longev only for low soilp sites
+ggplot(leaf_low, aes(lma, longev)) +
   geom_point() +
   geom_sma() +
   geom_smooth(method = "lm", col = "red") 
@@ -32,6 +45,21 @@ ggplot(leaflife, aes(lma, longev)) +
     ## `geom_smooth()` using formula 'y ~ x'
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+# facet for low and high rain sites 
+ggplot(leaflife, aes(lma, longev)) +
+  geom_point() +
+  geom_sma() +
+  geom_smooth(method = "lm", col = "red")  +
+  facet_wrap( ~ rain)
+```
+
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
+
+    ## `geom_smooth()` using formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ## Reference
 

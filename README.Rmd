@@ -28,12 +28,23 @@ library(ggsma)
 library(smatr)
 
 data(leaflife)
+head(leaflife)
 leaf_low <- subset(leaflife, soilp == "low")
 
-ggplot(leaflife, aes(lma, longev)) +
+# lma vs longev only for low soilp sites
+ggplot(leaf_low, aes(lma, longev)) +
   geom_point() +
   geom_sma() +
   geom_smooth(method = "lm", col = "red") 
+```
+
+```{r}
+# facet for low and high rain sites 
+ggplot(leaflife, aes(lma, longev)) +
+  geom_point() +
+  geom_sma() +
+  geom_smooth(method = "lm", col = "red")  +
+  facet_wrap( ~ rain)
 ```
 
 ## Reference
