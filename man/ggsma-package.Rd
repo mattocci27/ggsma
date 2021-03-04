@@ -13,6 +13,14 @@ mixtures.
 \references{
 Warton, David I., Ian J. Wright, Daniel S. Falster, and Mark Westoby. 2006. Bivariate Line-Fitting Methods for Allometry. Biological Reviews 81: 259–91.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/mattocci27/ggsam}
+  \item Report bugs at \url{https://github.com/mattocci27/ggsam/issues}
+}
+
+}
 \author{
 Masatoshi Katabuchi <mattocci27@gmail.com>
 }

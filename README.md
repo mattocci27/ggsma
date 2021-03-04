@@ -3,6 +3,8 @@
 
 ![R-CMD-check](https://github.com/mattocci27/ggsma/workflows/R-CMD-check/badge.svg?branch=master)
 
+## Installation
+
 ``` r
 devtools::install_github("mattocci27/ggsma")
 ```
