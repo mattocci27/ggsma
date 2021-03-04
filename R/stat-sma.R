@@ -1,27 +1,22 @@
+## #' @inheritParams geom_sma
 #' @rdname geom_sma
 #' @export
 stat_sma <- function(mapping = NULL, data = NULL,
                         position = "identity",
                         ...,
                         method = "sma",
-                 #       geom = "smooth2",
+                      #  geom = "sma",
                         formula = NULL,
                         se = TRUE,
+                        n = 80,
+                        nboot = 1000,
+                        fullrange = FALSE,
+                        level = 0.95,
+                        #method.args = list(),
                         na.rm = FALSE,
                         orientation = NA,
                         show.legend = NA,
                         inherit.aes = TRUE) {
-
-  params <- list(
-    na.rm = na.rm,
-    orientation = orientation,
-    se = se,
-    ...
-  )
-  if (identical(stat, "sma")) {
-    params$method <- method
-    params$formula <- formula
-  }
 
   ggplot2::layer(
     data = data,
@@ -31,7 +26,19 @@ stat_sma <- function(mapping = NULL, data = NULL,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = params
+    params = list(
+      method = method,
+      formula = formula,
+      se = se,
+      n = n,
+      nboot = nboot,
+      fullrange = fullrange,
+      level = level,
+      na.rm = na.rm,
+      orientation = orientation,
+    #  method.args = method.args,
+      ...
+    )
   )
 }
 
@@ -40,23 +47,32 @@ StatSMA <- ggplot2::ggproto("StatSMA", Stat,
   setup_params = function(data, params) {
     params$flipped_aes <- has_flipped_aes(data, params, ambiguous = TRUE)
     msg <- character()
-    if (is.null(params$method) || identical(params$method, "auto")) {
-      # Use loess for small datasets, gam with a cubic regression basis for
-      # larger. Based on size of the _largest_ group to avoid bad memory
-      # behaviour of loess
-      max_group <- max(table(interaction(data$group, data$PANEL, drop = TRUE)))
+    #if (is.null(params$method) || identical(params$method, "auto")) {
+    #  # Use loess for small datasets, gam with a cubic regression basis for
+    #  # larger. Based on size of the _largest_ group to avoid bad memory
+    #  # behaviour of loess
+    #  max_group <- max(table(interaction(data$group, data$PANEL, drop = TRUE)))
 
-      params$method <- "sma"
+    #if (identical(stat, StatSMA)) {
+    ##if (identical(stat, "sma")) {
+    #  message("helllo")
+    #  params$method <- "sma"
+    #}
 
-      msg <- c(msg, paste0("method = '", params$method, "'"))
-    }
+      #msg <- c(msg, paste0("method = '", params$method, "'"))
+      msg <- "method = 'sma'"
+        #c(msg, paste0("method = '", params$method, "'"))
+    #}
 
     if (is.null(params$formula)) {
         params$formula <- y ~ x
-      msg <- c(msg, paste0("formula '", deparse(params$formula), "'"))
+        msg <- c(msg, paste0("formula '", deparse(params$formula), "'"))
     }
-    if (identical(params$method, "gam")) {
-      params$method <- mgcv::gam
+    if (params$method != "sma") {
+      message("`stat_sma()` only uses sma (Standardized Major Axis)
+              ")
+      message("please use `ggplot2::stat_smooth()` or `ggplot2::geom_smooth()` for other models")
+      params$method <- "sma"
     }
 
     if (length(msg) > 0) {
@@ -69,7 +85,7 @@ StatSMA <- ggplot2::ggproto("StatSMA", Stat,
   extra_params = c("na.rm", "orientation"),
 
   compute_group = function(data, scales, method = NULL, formula = NULL,
-                           se = TRUE, n = 80, span = 0.75, fullrange = FALSE,
+                           se = TRUE, n = 80, nboot = 1000, fullrange = FALSE,
                            xseq = NULL, level = 0.95, method.args = list(),
                            na.rm = FALSE, flipped_aes = NA) {
     data <- flip_data(data, flipped_aes)
@@ -97,15 +113,15 @@ StatSMA <- ggplot2::ggproto("StatSMA", Stat,
       }
     }
 
-    
+     # method <- smatr::sma
+     # method.args$method <- "SMA"
 
-      method <- smatr::sma
-      method.args$method <- "SMA"
+     # base.args <- list(quote(formula), data = quote(data), weights = quote(weight))
+     # model <- do.call(method, c(base.args, method.args))
 
-      base.args <- list(quote(formula), data = quote(data), weights = quote(weight))
-      model <- do.call(method, c(base.args, method.args))
+     # sma_fun(data) %>% print
 
-      prediction <- predictdf.sma(model, xseq, se, level)
+      prediction <- predictdf.sma(data, xseq, se, level, nboot)
       prediction$flipped_aes <- flipped_aes
       flip_data(prediction, flipped_aes)
   },
@@ -113,11 +129,3 @@ StatSMA <- ggplot2::ggproto("StatSMA", Stat,
   required_aes = c("x", "y")
 )
 
-
-sma_fun <- function(data) {
-  data <- as_tibble(data)
-  sign <- ifelse(cor(data$y, data$x) >= 0, 1, -1)
-  slope <- sign * sd(data$y) / sd(data$x)
-  intercept <- mean(data$y) - slope * mean(data$x)
-  tibble(intercept, slope)
-}

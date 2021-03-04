@@ -14,7 +14,6 @@
 #' @import ggplot2
 #' @import dplyr
 #' @importFrom modelr bootstrap
-#' @importFrom smatr sma
 #' @importFrom purrr map_dfc
 #' @importFrom stats fitted quantile sd cor
 #' @importFrom utils globalVariables

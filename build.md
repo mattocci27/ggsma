@@ -1,22 +1,6 @@
-
+```{r}
 roxygen2::roxygenise()
 devtools::check(".", manual = TRUE)
-
-
-
-devtools::build_vignettes()
-devtools::build_manual(".")
-devtools::build(".")
-
-
-devtools::install_deps()
-devtools::test()
-devtools::test_coverage()
-devtools::run_examples()
-devtools::document()
-
-devtools::check(".", manual = TRUE)
-
 
 library(smatr)
 library(tictoc)
@@ -62,3 +46,4 @@ tibble(yy, xx) %>%
   geom_point() +
   geom_smooth2(method = "sma", se=TRUE) +
   geom_smooth2(method = "lm", se=TRUE, col = "red")
+```

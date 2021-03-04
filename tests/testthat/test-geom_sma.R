@@ -13,6 +13,18 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   geom_sma(method = "sma")
 
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_sma(method = "hoge")
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  stat_sma()
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_sma()
+
 fit1 <- sma(hwy ~ displ, mpg)
 
 fit2 <- mpg %>%

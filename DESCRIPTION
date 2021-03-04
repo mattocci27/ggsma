@@ -4,8 +4,7 @@ Title: Smooth lines for SMA
 Version: 0.1.0
 Author: Masatoshi Katabuchi
 Maintainer: Masatoshi Katabuchi <mattocci27@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: A simple function to draw SMA (Standardized Major Axis) regression lines in 'ggplot2'.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -18,8 +17,8 @@ Imports:
     purrr,
     magrittr,
     modelr,
-    utils,
-    smatr
+    utils
 Suggests:
     testthat (>= 2.1.0),
-    rmarkdown
+    rmarkdown,
+    smatr

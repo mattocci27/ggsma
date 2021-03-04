@@ -1,11 +1,13 @@
 
-# Smooth lines for Standardised Major Axis Regression
+# Smooth lines for Standardised Major Axis (SMA) Regression
 
 ![R-CMD-check](https://github.com/mattocci27/ggsma/workflows/R-CMD-check/badge.svg?branch=master)
 
 ``` r
 devtools::install_github("mattocci27/ggsma")
 ```
+
+## SMA (blue) vs OLS (red)
 
 ``` r
 library(ggsma)

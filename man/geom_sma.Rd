@@ -3,15 +3,14 @@
 \name{geom_sma}
 \alias{geom_sma}
 \alias{stat_sma}
-\title{Smoothed conditional means}
+\title{Smoothed conditional means for SMA}
 \usage{
 geom_sma(
   mapping = NULL,
   data = NULL,
-  stat = "sma",
   position = "identity",
   ...,
-  method = NULL,
+  method = "sma",
   formula = NULL,
   se = TRUE,
   na.rm = FALSE,
@@ -28,6 +27,10 @@ stat_sma(
   method = "sma",
   formula = NULL,
   se = TRUE,
+  n = 80,
+  nboot = 1000,
+  fullrange = FALSE,
+  level = 0.95,
   na.rm = FALSE,
   orientation = NA,
   show.legend = NA,
@@ -35,8 +38,72 @@ stat_sma(
 )
 }
 \arguments{
-\item{geom, stat}{Use to override the default connection between
-`geom_smooth()` and `stat_smooth()`.}
+\item{mapping}{Set of aesthetic mappings created by [aes()] or
+[aes_()]. If specified and `inherit.aes = TRUE` (the
+default), it is combined with the default mapping at the top level of the
+plot. You must supply `mapping` if there is no plot mapping.}
+
+\item{data}{The data to be displayed in this layer. There are three
+   options:
+
+   If `NULL`, the default, the data is inherited from the plot
+   data as specified in the call to [ggplot()].
+
+   A `data.frame`, or other object, will override the plot
+   data. All objects will be fortified to produce a data frame. See
+   [fortify()] for which variables will be created.
+
+   A `function` will be called with a single argument,
+   the plot data. The return value must be a `data.frame`, and
+   will be used as the layer data. A `function` can be created
+   from a `formula` (e.g. `~ head(.x, 10)`).}
+
+\item{position}{Position adjustment, either as a string, or the result of
+a call to a position adjustment function.}
+
+\item{...}{Other arguments passed on to [layer()]. These are
+often aesthetics, used to set an aesthetic to a fixed value, like
+`colour = "red"` or `size = 3`. They may also be parameters
+to the paired geom/stat.}
+
+\item{method}{Smoothing method (function) to use, accepts either
+`NULL` or a character "sma". Both NULL` and "sma" use SMA regression.}
+
+\item{formula}{Formula to use in smoothing function, eg. `y ~ x`,
+`y ~ poly(x, 2)`, `y ~ log(x)`. `NULL` by default, in which case
+`method = NULL` implies `formula = y ~ x` when there are fewer than 1,000
+observations and `formula = y ~ s(x, bs = "cs")` otherwise.}
+
+\item{se}{Display bootstrap confidence interval around smooth? (`TRUE` by default, see
+`level` to control.)}
+
+\item{na.rm}{If `FALSE`, the default, missing values are removed with
+a warning. If `TRUE`, missing values are silently removed.}
+
+\item{orientation}{projection orientation, which defaults to
+`c(90, 0, mean(range(x)))`.  This is not optimal for many
+projections, so you will have to supply your own. See
+[mapproj::mapproject()] for more information.}
+
+\item{show.legend}{logical. Should this layer be included in the legends?
+`NA`, the default, includes if any aesthetics are mapped.
+`FALSE` never includes, and `TRUE` always includes.
+It can also be a named logical vector to finely select the aesthetics to
+display.}
+
+\item{inherit.aes}{If `FALSE`, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. [borders()].}
+
+\item{n}{Number of points at which to evaluate smoother.}
+
+\item{nboot}{Number of bootstraps.}
+
+\item{fullrange}{Should the fit span the full range of the plot, or just
+the data?}
+
+\item{level}{Level of confidence interval to use (0.95 by default).}
 }
 \description{
 Aids the eye in seeing patterns in the presence of overplotting.
@@ -46,20 +113,10 @@ display the results with a non-standard geom.
 }
 \details{
 Calculation is performed by the (currently undocumented)
-`predictdf()` generic and its methods.  For most methods the standard
-error bounds are computed using the [predict()] method -- the
-exceptions are `loess()`, which uses a t-based approximation, and
-`glm()`, where the normal confidence interval is constructed on the link
-scale and then back-transformed to the response scale.
+`predictdf.sma()`. Confidence intervals are estimated by using Bootstrapping.
 }
 \examples{
 ggplot(mpg, aes(displ, hwy)) +
   geom_point() +
   geom_sma()
-}
-\seealso{
-See individual modelling functions for more details:
-  [lm()] for linear smooths,
-  [glm()] for generalised linear smooths, and
-  [loess()] for local smooths.
 }

@@ -4,7 +4,7 @@ output:
     pandoc_args: --webtex=https://chart.apis.google.com/chart?cht=tx&chl=
 ---
 
-# Smooth lines for Standardised Major Axis Regression 
+# Smooth lines for Standardised Major Axis (SMA) Regression 
 
 ![R-CMD-check](https://github.com/mattocci27/ggsma/workflows/R-CMD-check/badge.svg?branch=master)
 
@@ -15,6 +15,8 @@ devtools::install_github("mattocci27/ggsma")
 ````{r,eval=FALSE, echo=FALSE}
 rmarkdown::render("README.Rmd")
 ````
+
+## SMA (blue) vs OLS (red)
 
 ```{r}
 library(ggsma)

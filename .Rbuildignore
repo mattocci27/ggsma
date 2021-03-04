@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 build.md
-LICENSE
 LICENSE.md
 README.md
 README.Rmd
