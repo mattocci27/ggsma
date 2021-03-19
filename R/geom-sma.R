@@ -52,6 +52,8 @@
 #'   rather than combining with them. This is most useful for helper functions
 #'   that define both data and aesthetics and shouldn't inherit behaviour from
 #'   the default plot specification, e.g. [borders()].
+#' @param show.sig.only If `TRUE`, shows non-significant relationships using
+#' dased lines (p = 0.05). If `FALSE`, all the relaionships are shown by solid lines. You can also specify p-value for threshold (e.g., show.sig.only = 0.1).
 #' @param ... Other arguments passed on to [layer()]. These are
 #'   often aesthetics, used to set an aesthetic to a fixed value, like
 #'   `colour = "red"` or `size = 3`. They may also be parameters
@@ -74,7 +76,8 @@ geom_sma <- function(mapping = NULL, data = NULL,
                         se = TRUE,
                         na.rm = FALSE,
                         orientation = NA,
-                        show.legend = NA,
+                        show.legend = FALSE,
+                        show.sig.only = FALSE,
                         inherit.aes = TRUE) {
 
   params <- list(
@@ -83,6 +86,7 @@ geom_sma <- function(mapping = NULL, data = NULL,
     se = se,
     method = method,
     formula = formula,
+    show.sig.only = show.sig.only,
     ...
   )
 #  if (identical(stat, "sma")) {
@@ -115,7 +119,20 @@ GeomSMA <- ggplot2::ggproto("GeomSMA", Geom,
     ggplot2::GeomLine$setup_data(data, params)
   },
 
-  draw_group = function(data, panel_params, coord, se = FALSE, flipped_aes = FALSE) {
+  draw_group = function(data, panel_params, coord, se = FALSE, flipped_aes = FALSE, show.sig.only = show.sig.only) {
+    if (length(show.sig.only) > 1) stop("`show.sig.only` has length > 1")
+    if (!is.logical(show.sig.only) & !is.numeric(show.sig.only)) {
+      stop("`show.sig.only` shoud be logical or numeric")
+    }
+    if (show.sig.only) {
+      if (is.numeric(show.sig.only)) {
+        data$alpha <- ifelse(data$pval > show.sig.only, 0, data$alpha)
+        data$linetype <- ifelse(data$pval > show.sig.only, 2, data$linetype)
+      } else {
+        data$alpha <- ifelse(data$pval > 0.05, 0, data$alpha)
+        data$linetype <- ifelse(data$pval > 0.05, 2, data$linetype)
+      }
+    }
     ribbon <- transform(data, colour = NA)
     path <- transform(data, alpha = NA)
 

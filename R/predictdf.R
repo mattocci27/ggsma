@@ -7,6 +7,7 @@ predictdf.sma <- function(data, xseq, se, level, nboot) {
 #  data <- data$data
   coef <- sma_fun(data)
   pred <- coef[[1]] + coef[[2]] * xseq
+  pval <- cor.test(data$x, data$y)$p.value
   if (se) {
     # use data instead of model
     boot_fit <- modelr::bootstrap(data, n = nboot, id = 'boot_num') %>% 
@@ -22,9 +23,10 @@ predictdf.sma <- function(data, xseq, se, level, nboot) {
       y = pred,
       ymin = boot_fit$conf_low,
       ymax = boot_fit$conf_high,
-      se = 10)
+      se = 10,
+      pval = pval)
   } else {
-    base::data.frame(x = xseq, y = as.vector(pred))
+    base::data.frame(x = xseq, y = as.vector(pred), pval = pval)
   }
 }
 
