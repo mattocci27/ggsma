@@ -45,6 +45,7 @@ x2 <- rnorm(50)
 y2 <- rnorm(50, x2)
 dat <- tibble(x = c(x1, x2), y = c(y1, y2), gr = rep(c("gr1", "gr2"), each = 50))
 
+
 ggplot(dat, aes(x = x, y = y, col = gr)) +
   geom_point() +
   geom_sma()

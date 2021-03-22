@@ -66,7 +66,7 @@ ggplot(leaflife, aes(lma, longev)) +
 ## Only shows significant relationships
 
 ``` r
-# bad data
+# weakly correlated data
 library(tidyverse)
 set.seed(1234)
 S <- clusterGeneration::genPositiveDefMat(5)$Sigma
@@ -100,14 +100,48 @@ ggplot(dat_long, aes(x = value, y = y, col = name)) +
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
+# shows non-significant relationships using dased lines
 ggplot(dat_long, aes(x = value, y = y, col = name)) +
   geom_point() +
-  geom_sma(show.sig.only = TRUE)
+  geom_sma(show.sig.only = 1)
 ```
 
     ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
 
 ![](README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+``` r
+# only keeps significant relationships 
+ggplot(dat_long, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma(show.sig.only = 2)
+```
+
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+
+Of course, we can do the same thing without using `show.sig.only`
+argument.
+
+``` r
+dat_long2 <- dat_long %>%
+  group_by(name) %>%
+  nest() %>%
+  mutate(p = map_dbl(data, ~ cor.test(.$y, .$value)$p.value)) %>%
+  unnest(cols = c(data))
+
+ggplot(dat_long2, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma(data = dat_long2 %>% filter(p < 0.05)) +
+  geom_sma(data = dat_long2 %>% filter(p > 0.05),
+           lty = 2, se = FALSE)
+```
+
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## Reference
 

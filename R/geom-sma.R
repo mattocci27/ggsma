@@ -52,8 +52,9 @@
 #'   rather than combining with them. This is most useful for helper functions
 #'   that define both data and aesthetics and shouldn't inherit behaviour from
 #'   the default plot specification, e.g. [borders()].
-#' @param show.sig.only If `TRUE`, shows non-significant relationships using
-#' dased lines (p = 0.05). If `FALSE`, all the relaionships are shown by solid lines. You can also specify p-value for threshold (e.g., show.sig.only = 0.1).
+#' @param show.sig.only If `TRUE` or 1, shows non-significant relationships
+#' using dased lines (p = 0.05). If 2, shows only significant relationships. If `FALSE`, all the relaionships are shown by solid lines. You can also specify p-value for threshold (e.g., show.sig.pval = 0.1).
+#' @param show.sig.pval see show.sig.only.
 #' @param ... Other arguments passed on to [layer()]. These are
 #'   often aesthetics, used to set an aesthetic to a fixed value, like
 #'   `colour = "red"` or `size = 3`. They may also be parameters
@@ -78,6 +79,7 @@ geom_sma <- function(mapping = NULL, data = NULL,
                         orientation = NA,
                         show.legend = FALSE,
                         show.sig.only = FALSE,
+                        show.sig.pval = 0.05,
                         inherit.aes = TRUE) {
 
   params <- list(
@@ -87,6 +89,7 @@ geom_sma <- function(mapping = NULL, data = NULL,
     method = method,
     formula = formula,
     show.sig.only = show.sig.only,
+    show.sig.pval = show.sig.pval,
     ...
   )
 #  if (identical(stat, "sma")) {
@@ -119,26 +122,30 @@ GeomSMA <- ggplot2::ggproto("GeomSMA", Geom,
     ggplot2::GeomLine$setup_data(data, params)
   },
 
-  draw_group = function(data, panel_params, coord, se = FALSE, flipped_aes = FALSE, show.sig.only = show.sig.only) {
+  draw_group = function(data, panel_params, coord, se = FALSE, flipped_aes = FALSE, show.sig.only = show.sig.only, show.sig.pval = show.sig.pval) {
     if (length(show.sig.only) > 1) stop("`show.sig.only` has length > 1")
-    if (!is.logical(show.sig.only) & !is.numeric(show.sig.only)) {
-      stop("`show.sig.only` shoud be logical or numeric")
+    if (!is.logical(show.sig.only) & show.sig.only != 1 & show.sig.only != 2) {
+      stop("`show.sig.only` shoud be logical or numeric value of 1 or 2")
     }
-    if (show.sig.only) {
-      if (is.numeric(show.sig.only)) {
-        data$alpha <- ifelse(data$pval > show.sig.only, 0, data$alpha)
-        data$linetype <- ifelse(data$pval > show.sig.only, 2, data$linetype)
-      } else {
-        data$alpha <- ifelse(data$pval > 0.05, 0, data$alpha)
-        data$linetype <- ifelse(data$pval > 0.05, 2, data$linetype)
-      }
-    }
-    ribbon <- transform(data, colour = NA)
-    path <- transform(data, alpha = NA)
 
+    ribbon <- transform(data, colour = NA)
     ymin = flipped_names(flipped_aes)$ymin
     ymax = flipped_names(flipped_aes)$ymax
     has_ribbon <- se && !is.null(data[[ymax]]) && !is.null(data[[ymin]])
+
+    if (show.sig.only == 1 | show.sig.only) {
+        if (data$pval[1] > show.sig.pval) has_ribbon <- FALSE
+        data$linetype <- ifelse(data$pval > show.sig.pval, 2, data$linetype)
+    } else if (show.sig.only == 2) {
+        if (data$pval[1] > show.sig.pval) has_ribbon <- FALSE
+        data$alpha <- ifelse(data$pval > show.sig.pval, 0, data$alpha)
+        data$colour <- ifelse(data$pval > show.sig.pval, NA, data$colour)
+    }
+#    message("has_ribbon")
+#    print(has_ribbon)
+    #print(panel_params)
+    path <- transform(data, alpha = NA)
+    #path %>% print
 
     grid::gList(
       if (has_ribbon) ggplot2::GeomRibbon$draw_group(ribbon, panel_params, coord, flipped_aes = flipped_aes),

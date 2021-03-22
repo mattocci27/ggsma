@@ -14,6 +14,7 @@ stat_sma <- function(mapping = NULL, data = NULL,
                         level = 0.95,
                         #method.args = list(),
                         na.rm = FALSE,
+                        show.sig.only = FALSE,
                         orientation = NA,
                         show.legend = NA,
                         inherit.aes = TRUE) {
@@ -31,6 +32,7 @@ stat_sma <- function(mapping = NULL, data = NULL,
       formula = formula,
       se = se,
       n = n,
+      show.sig.only = show.sig.only,
       nboot = nboot,
       fullrange = fullrange,
       level = level,
@@ -86,7 +88,7 @@ StatSMA <- ggplot2::ggproto("StatSMA", Stat,
 
   compute_group = function(data, scales, method = NULL, formula = NULL,
                            se = TRUE, n = 80, nboot = 1000, fullrange = FALSE,
-                           xseq = NULL, level = 0.95, method.args = list(),
+                           xseq = NULL, level = 0.95, show.sig.only = show.sig.only, show.sig.pval = 0.05, method.args = list(),
                            na.rm = FALSE, flipped_aes = NA) {
     data <- flip_data(data, flipped_aes)
     if (length(unique(data$x)) < 2) {
@@ -121,7 +123,7 @@ StatSMA <- ggplot2::ggproto("StatSMA", Stat,
 
      # sma_fun(data) %>% print
 
-      prediction <- predictdf.sma(data, xseq, se, level, nboot)
+      prediction <- predictdf.sma(data, xseq, se, show.sig.only, show.sig.pval, level, nboot)
       prediction$flipped_aes <- flipped_aes
       flip_data(prediction, flipped_aes)
   },

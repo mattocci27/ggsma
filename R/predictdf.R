@@ -3,12 +3,12 @@
 
 utils::globalVariables(c(".", "boot_num", "strap"))
 
-predictdf.sma <- function(data, xseq, se, level, nboot) {
+predictdf.sma <- function(data, xseq, se, show.sig.only, show.sig.pval, level, nboot) {
 #  data <- data$data
   coef <- sma_fun(data)
   pred <- coef[[1]] + coef[[2]] * xseq
   pval <- cor.test(data$x, data$y)$p.value
-  if (se) {
+  if ((se & show.sig.only %in% 1:2 & pval < show.sig.pval) | (se & !show.sig.only)){
     # use data instead of model
     boot_fit <- modelr::bootstrap(data, n = nboot, id = 'boot_num') %>% 
       group_by(boot_num) %>%
