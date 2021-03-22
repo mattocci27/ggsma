@@ -15,7 +15,7 @@
 #' @import dplyr
 #' @importFrom modelr bootstrap
 #' @importFrom purrr map_dfc
-#' @importFrom stats fitted quantile sd cor
+#' @importFrom stats fitted quantile sd cor cor.test
 #' @importFrom utils globalVariables
 #' @importFrom magrittr %>%
 #' @export

@@ -49,6 +49,56 @@ ggplot(leaflife, aes(lma, longev)) +
   facet_wrap( ~ rain)
 ```
 
+## Only shows significant relationships 
+
+```{r}
+# weakly correlated data
+library(tidyverse)
+set.seed(1234)
+S <- clusterGeneration::genPositiveDefMat(5)$Sigma
+Cor <- cov2cor(S)
+Cor[1, 5] <- Cor[5, 1] <- 0.8
+Cor %>% round(2)
+
+dat <- mvtnorm::rmvnorm(30, mean = rep(0, 5),  sigma = Cor) 
+colnames(dat) <- c("y", paste0("x", 1:4))
+
+dat_long <- dat %>%
+  as_tibble %>%
+  pivot_longer(2:5)
+
+ggplot(dat_long, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma()
+
+# shows non-significant relationships using dased lines
+ggplot(dat_long, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma(show.sig.only = 1)
+
+# only keeps significant relationships 
+ggplot(dat_long, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma(show.sig.only = 2)
+
+```
+
+Of course, we can do the same thing without using `show.sig.only` argument.
+
+```{r}
+dat_long2 <- dat_long %>%
+  group_by(name) %>%
+  nest() %>%
+  mutate(p = map_dbl(data, ~ cor.test(.$y, .$value)$p.value)) %>%
+  unnest(cols = c(data))
+
+ggplot(dat_long2, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma(data = dat_long2 %>% filter(p < 0.05)) +
+  geom_sma(data = dat_long2 %>% filter(p > 0.05),
+           lty = 2, se = FALSE)
+```
+
 ## Reference
 
 Warton, David I., Ian J. Wright, Daniel S. Falster, and Mark Westoby. 2006. Bivariate Line-Fitting Methods for Allometry. Biological Reviews 81: 259–91. [https://doi.org/10.1017/S1464793106007007](https://doi.org/10.1017/S1464793106007007)

@@ -15,7 +15,9 @@ geom_sma(
   se = TRUE,
   na.rm = FALSE,
   orientation = NA,
-  show.legend = NA,
+  show.legend = FALSE,
+  show.sig.only = FALSE,
+  show.sig.pval = 0.05,
   inherit.aes = TRUE
 )
 
@@ -32,6 +34,7 @@ stat_sma(
   fullrange = FALSE,
   level = 0.95,
   na.rm = FALSE,
+  show.sig.only = FALSE,
   orientation = NA,
   show.legend = NA,
   inherit.aes = TRUE
@@ -90,6 +93,11 @@ projections, so you will have to supply your own. See
 `FALSE` never includes, and `TRUE` always includes.
 It can also be a named logical vector to finely select the aesthetics to
 display.}
+
+\item{show.sig.only}{If `TRUE` or 1, shows non-significant relationships
+using dased lines (p = 0.05). If 2, shows only significant relationships. If `FALSE`, all the relaionships are shown by solid lines. You can also specify p-value for threshold (e.g., show.sig.pval = 0.1).}
+
+\item{show.sig.pval}{see show.sig.only.}
 
 \item{inherit.aes}{If `FALSE`, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
