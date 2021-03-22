@@ -133,13 +133,13 @@ GeomSMA <- ggplot2::ggproto("GeomSMA", Geom,
     ymax = flipped_names(flipped_aes)$ymax
     has_ribbon <- se && !is.null(data[[ymax]]) && !is.null(data[[ymin]])
 
-    if (show.sig.only == 1 | show.sig.only) {
-        if (data$pval[1] > show.sig.pval) has_ribbon <- FALSE
-        data$linetype <- ifelse(data$pval > show.sig.pval, 2, data$linetype)
-    } else if (show.sig.only == 2) {
+    if (show.sig.only == 2) {
         if (data$pval[1] > show.sig.pval) has_ribbon <- FALSE
         data$alpha <- ifelse(data$pval > show.sig.pval, 0, data$alpha)
         data$colour <- ifelse(data$pval > show.sig.pval, NA, data$colour)
+    } else if (show.sig.only == 1 | show.sig.only) {
+        if (data$pval[1] > show.sig.pval) has_ribbon <- FALSE
+        data$linetype <- ifelse(data$pval > show.sig.pval, 2, data$linetype)
     }
 #    message("has_ribbon")
 #    print(has_ribbon)
