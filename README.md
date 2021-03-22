@@ -63,6 +63,52 @@ ggplot(leaflife, aes(lma, longev)) +
 
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
+## Only shows significant relationships
+
+``` r
+# bad data
+library(tidyverse)
+set.seed(1234)
+S <- clusterGeneration::genPositiveDefMat(5)$Sigma
+Cor <- cov2cor(S)
+Cor[1, 5] <- Cor[5, 1] <- 0.8
+Cor %>% round(2)
+```
+
+    ##       [,1] [,2]  [,3]  [,4]  [,5]
+    ## [1,]  1.00    0 -0.08 -0.29  0.80
+    ## [2,]  0.00    1  0.00  0.00  0.00
+    ## [3,] -0.08    0  1.00 -0.10 -0.09
+    ## [4,] -0.29    0 -0.10  1.00 -0.28
+    ## [5,]  0.80    0 -0.09 -0.28  1.00
+
+``` r
+dat <- mvtnorm::rmvnorm(30, mean = rep(0, 5),  sigma = Cor) 
+colnames(dat) <- c("y", paste0("x", 1:4))
+
+dat_long <- dat %>%
+  as_tibble %>%
+  pivot_longer(2:5)
+
+ggplot(dat_long, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma()
+```
+
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+ggplot(dat_long, aes(x = value, y = y, col = name)) +
+  geom_point() +
+  geom_sma(show.sig.only = TRUE)
+```
+
+    ## `stat_sma()` using method = 'sma' and formula 'y ~ x'
+
+![](README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
 ## Reference
 
 Warton, David I., Ian J. Wright, Daniel S. Falster, and Mark Westoby.
