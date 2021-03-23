@@ -83,7 +83,8 @@ ggplot(dat_long, aes(x = value, y = y, col = name)) +
 
 ```
 
-Of course, we can do the same thing without using `show.sig.only` argument.
+Of course, we can do the same thing without using `show.sig.only` argument but
+need a little bit more work.
 
 ```{r}
 dat_long2 <- dat_long %>%

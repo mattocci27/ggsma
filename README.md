@@ -122,7 +122,7 @@ ggplot(dat_long, aes(x = value, y = y, col = name)) +
 ![](README_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
 
 Of course, we can do the same thing without using `show.sig.only`
-argument.
+argument but need a little bit more work.
 
 ``` r
 dat_long2 <- dat_long %>%
